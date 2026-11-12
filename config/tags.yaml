@@ -1,0 +1,69 @@
+# Siemens S7-1200 test tags (DB100 must be NON-OPTIMIZED; PUT/GET enabled).
+# These are test examples, not verified live addresses.
+tags:
+  - tag_id: temperature
+    device_id: siemens_01
+    name: Temperature
+    group: process
+    address: DB100.DBD0
+    data_type: REAL
+    poll_interval_ms: 1000
+    enabled: true
+    logging_mode: cyclic
+    engineering_unit: C
+    thresholds:
+      high: 80
+      low: 5
+      hysteresis: 1
+
+  - tag_id: pressure
+    device_id: siemens_01
+    name: Pressure
+    group: process
+    address: DB100.DBD4
+    data_type: REAL
+    poll_interval_ms: 1000
+    enabled: true
+    logging_mode: cyclic
+    engineering_unit: bar
+
+  - tag_id: counter
+    device_id: siemens_01
+    name: Counter
+    group: production
+    address: DB100.DBW8
+    data_type: INT
+    poll_interval_ms: 60000
+    enabled: true
+    logging_mode: cyclic
+
+  - tag_id: motor_status
+    device_id: siemens_01
+    name: MotorStatus
+    group: status
+    address: DB100.DBX10.0
+    data_type: BOOL
+    poll_interval_ms: 1000
+    enabled: true
+    logging_mode: event
+    edge_events: true
+
+  - tag_id: test_write_value
+    device_id: siemens_01
+    name: TestWriteValue
+    group: commissioning
+    address: DB100.DBD12
+    data_type: REAL
+    poll_interval_ms: 5000
+    enabled: true
+    logging_mode: event
+    deadband:
+      type: absolute
+      value: 0.01
+    access: read_write              # still blocked by gateway.read_only_mode and device.write_enabled
+    write:
+      min: 0
+      max: 100
+      allowed_roles: [operator]
+      verify_readback: true
+      readback_tolerance: 0.0001

@@ -1,0 +1,266 @@
+{
+  "uid": "plcgw-health",
+  "title": "PLC Gateway - Gateway & Device Health",
+  "tags": [
+    "plc-gateway"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "30s",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Queue size",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, queue_size AS `queue`\nFROM gateway_health WHERE $__timeFilter(snapshot_ts) AND device_id = '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      }
+    },
+    {
+      "id": 2,
+      "title": "Spool rows (unsent to MySQL)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, spool_rows AS `spool`\nFROM gateway_health WHERE $__timeFilter(snapshot_ts) AND device_id = '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      }
+    },
+    {
+      "id": 3,
+      "title": "Dropped records (total)",
+      "type": "stat",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, dropped_total AS `dropped`\nFROM gateway_health WHERE $__timeFilter(snapshot_ts) AND device_id = '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "title": "Process CPU %",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, cpu_percent AS `cpu`\nFROM gateway_health WHERE $__timeFilter(snapshot_ts) AND device_id = '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 8,
+        "h": 8
+      }
+    },
+    {
+      "id": 5,
+      "title": "Process memory (MB)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, rss_mb AS `rss`\nFROM gateway_health WHERE $__timeFilter(snapshot_ts) AND device_id = '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 8,
+        "y": 8,
+        "w": 8,
+        "h": 8
+      }
+    },
+    {
+      "id": 6,
+      "title": "DB insert p95 (ms)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, db_insert_p95_ms AS `db p95`\nFROM gateway_health WHERE $__timeFilter(snapshot_ts) AND device_id = '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 16,
+        "y": 8,
+        "w": 8,
+        "h": 8
+      }
+    },
+    {
+      "id": 7,
+      "title": "Failed reads (cumulative) per device",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, device_id AS metric, reads_failed AS value\nFROM gateway_health\nWHERE $__timeFilter(snapshot_ts) AND device_id <> '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      }
+    },
+    {
+      "id": 8,
+      "title": "Poll duration p95 (ms) per device",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, device_id AS metric, poll_p95_ms AS value\nFROM gateway_health\nWHERE $__timeFilter(snapshot_ts) AND device_id <> '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      }
+    }
+  ],
+  "annotations": {
+    "list": []
+  }
+}

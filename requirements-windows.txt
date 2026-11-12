@@ -1,0 +1,3 @@
+-r requirements.txt
+# Windows service host and OPC DA COM bridge
+pywin32==312

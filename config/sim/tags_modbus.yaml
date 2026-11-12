@@ -1,0 +1,7 @@
+tags:
+  - {tag_id: voltage_l1, device_id: modbus_sim, name: Voltage L1, address: "holding:0", data_type: REAL,
+     poll_interval_ms: 1000, logging_mode: cyclic, engineering_unit: V}
+  - {tag_id: energy_total, device_id: modbus_sim, name: Energy total, address: "input:100", data_type: UDINT,
+     poll_interval_ms: 5000, logging_mode: cyclic, engineering_unit: kWh}
+  - {tag_id: breaker_closed, device_id: modbus_sim, name: Breaker closed, address: "discrete:0", data_type: BOOL,
+     poll_interval_ms: 1000, logging_mode: event, edge_events: true}

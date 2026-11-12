@@ -1,0 +1,29 @@
+# LOCAL DEVELOPMENT ONLY (macOS/Linux with Docker). Not a production deployment.
+#   docker compose -f docker-compose.dev.yml up -d
+# Then in .env: MYSQL_HOST=127.0.0.1 MYSQL_PORT=3307 MYSQL_DATABASE=plc_gateway MYSQL_USER=root
+#               MYSQL_PASSWORD=<DEV_MYSQL_ROOT_PASSWORD>   and run: python scripts/init_database.py
+# Grafana: http://localhost:3000 (admin / DEV_GRAFANA_ADMIN_PASSWORD)
+services:
+  mysql:
+    image: mysql:8.4.6
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DEV_MYSQL_ROOT_PASSWORD:?set DEV_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: plc_gateway
+    command: ["--mysqlx=OFF", "--default-time-zone=+00:00"]
+    ports: ["127.0.0.1:3307:3306"]
+    volumes: ["mysql-data:/var/lib/mysql"]
+
+  grafana:
+    image: grafana/grafana-oss:11.3.0
+    depends_on: [mysql]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${DEV_GRAFANA_ADMIN_PASSWORD:?set DEV_GRAFANA_ADMIN_PASSWORD}
+      GRAFANA_MYSQL_HOST: mysql
+      GRAFANA_MYSQL_PASSWORD: ${DEV_GRAFANA_MYSQL_PASSWORD:?set DEV_GRAFANA_MYSQL_PASSWORD}
+    ports: ["127.0.0.1:3000:3000"]
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards/plc-gateway:ro
+
+volumes:
+  mysql-data:

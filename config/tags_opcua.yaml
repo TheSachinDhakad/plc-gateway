@@ -1,0 +1,9 @@
+tags:
+  - tag_id: ua_temperature
+    device_id: opcua_01
+    name: Temperature (OPC UA)
+    address: ns=3;s="DB_Process"."Temperature"
+    data_type: REAL
+    poll_interval_ms: 1000
+    logging_mode: cyclic
+    engineering_unit: C

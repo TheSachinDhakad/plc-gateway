@@ -1,0 +1,7 @@
+tags:
+  - {tag_id: ua_temperature, device_id: opcua_sim, name: Temperature, address: "ns=2;s=Sim.Temperature",
+     data_type: REAL, poll_interval_ms: 1000, logging_mode: cyclic, engineering_unit: C}
+  - {tag_id: ua_counter, device_id: opcua_sim, name: Counter, address: "ns=2;s=Sim.Counter", data_type: DINT,
+     poll_interval_ms: 1000, logging_mode: cyclic}
+  - {tag_id: ua_running, device_id: opcua_sim, name: Running, address: "ns=2;s=Sim.Running", data_type: BOOL,
+     poll_interval_ms: 1000, logging_mode: event, edge_events: true}

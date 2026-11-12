@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "industrial-plc-gateway"
+version = "1.0.0"
+description = "Universal industrial PLC data gateway (S7, Logix, MC, Modbus, OPC UA/DA) with MySQL and Grafana integration"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = { text = "Proprietary" }
+dependencies = [
+    "python-snap7==3.5.0",
+    "pycomm3==1.2.16",
+    "pymodbus==3.16.2",
+    "pyserial==3.5",
+    "asyncua==2.1.0",
+    "aiomysql==0.3.2",
+    "PyMySQL==1.1.2",   # 1.2.x breaks aiomysql 0.3.2 bytes escaping
+    "pydantic==2.14.3",
+    "PyYAML==6.0.3",
+    "python-dotenv==1.2.4",
+    "httpx==0.28.1",
+    "psutil==7.2.2",
+]
+
+[project.optional-dependencies]
+mqtt = ["paho-mqtt==2.2.0"]
+windows = ["pywin32==312; sys_platform == 'win32'"]
+dev = [
+    "pytest==9.2.0",
+    "pytest-asyncio==1.4.1.post1",
+    "ruff==0.17.4",
+]
+
+[project.scripts]
+plc-gateway = "main:cli"
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+include = ["core*", "database*", "drivers*", "integrations*", "models*", "services*", "simulators*", "utils*", "scripts*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = ["data", "logs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "ASYNC", "RUF"]
+ignore = [
+    "S101",   # assert in tests
+    "S104",   # binding to 0.0.0.0 is a deliberate, configurable choice
+    "S311",   # random used only for jitter, not cryptography
+    "S603",   # subprocess with fixed argv (OPC DA bridge)
+    "RUF012",
+    "ASYNC109", # explicit timeout parameters are intentional (blocking-driver safety net)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "B"]
+"perf/*" = ["S"]
+"simulators/*" = ["S"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = [
+    "sim: tests that start a local protocol simulator on localhost",
+    "mysql: tests that need a MySQL 8 server (env MYSQL_TEST_DSN)",
+    "hardware: tests against a real PLC (env PLC_HW_*); skipped by default",
+]
+addopts = "-m 'not hardware'"
+filterwarnings = [
+    "ignore::DeprecationWarning:asyncua.*",
+    "ignore:.*VALUES function.*",
+]

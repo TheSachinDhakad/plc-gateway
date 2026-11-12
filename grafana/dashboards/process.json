@@ -1,0 +1,128 @@
+{
+  "uid": "plcgw-process",
+  "title": "PLC Gateway - Temperature & Pressure",
+  "tags": [
+    "plc-gateway"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Latest values",
+      "type": "table",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT device_id AS Device, tag_name AS Tag, value_num AS Value, engineering_unit AS Unit, quality AS Quality, gateway_ts AS Updated\nFROM v_tag_latest\nWHERE tag_id LIKE '%temp%' OR tag_id LIKE '%press%'\nORDER BY device_id, tag_name"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 7
+      }
+    },
+    {
+      "id": 2,
+      "title": "Temperature",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT $__timeGroupAlias(time, $__interval), CONCAT(device_id, '/', tag_name) AS metric, AVG(value_num) AS value\nFROM v_tag_history\nWHERE $__timeFilter(time) AND tag_id LIKE '%temp%' AND quality = 0\nGROUP BY 1, 2\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 24,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "lineWidth": 1,
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "title": "Pressure",
+      "type": "timeseries",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT $__timeGroupAlias(time, $__interval), CONCAT(device_id, '/', tag_name) AS metric, AVG(value_num) AS value\nFROM v_tag_history\nWHERE $__timeFilter(time) AND tag_id LIKE '%press%' AND quality = 0\nGROUP BY 1, 2\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurebar",
+          "custom": {
+            "lineWidth": 1,
+            "spanNulls": false
+          }
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "annotations": {
+    "list": []
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "uid": "plcgw-comm",
+  "title": "PLC Gateway - Communication Status",
+  "tags": [
+    "plc-gateway"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "30s",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Current device status",
+      "type": "table",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT h.device_id AS Device, h.status AS Status, h.connected AS Connected, h.snapshot_ts AS `As of`,\n  JSON_UNQUOTE(JSON_EXTRACT(h.detail, '$.last_error')) AS `Last error`\nFROM gateway_health h\nJOIN (SELECT device_id, MAX(snapshot_ts) AS ts FROM gateway_health WHERE device_id <> '_gateway'\n      GROUP BY device_id) m ON m.device_id = h.device_id AND m.ts = h.snapshot_ts\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 7
+      }
+    },
+    {
+      "id": 2,
+      "title": "Connected (1) / disconnected (0)",
+      "type": "state-timeline",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "time_series",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT snapshot_ts AS time, device_id AS metric, connected AS value\nFROM gateway_health\nWHERE $__timeFilter(snapshot_ts) AND device_id <> '_gateway'\nORDER BY 1"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 24,
+        "h": 9
+      }
+    },
+    {
+      "id": 3,
+      "title": "Communication events",
+      "type": "table",
+      "datasource": {
+        "type": "mysql",
+        "uid": "plcgw-mysql"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "plcgw-mysql"
+          },
+          "refId": "A",
+          "format": "table",
+          "rawQuery": true,
+          "editorMode": "code",
+          "rawSql": "SELECT time, device_id, event_type, message\nFROM v_events\nWHERE $__timeFilter(time) AND event_type IN ('COMM_LOST', 'COMM_RESTORED')\nORDER BY time DESC LIMIT 500"
+        }
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 9
+      }
+    }
+  ],
+  "annotations": {
+    "list": []
+  }
+}

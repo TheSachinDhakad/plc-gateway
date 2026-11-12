@@ -1,0 +1,81 @@
+# Gateway runtime settings. Secrets are NEVER placed here — only env var names.
+gateway:
+  gateway_id: gw_plant01_ipc01
+  environment: production          # development | production
+  status_file: data/status.json    # live status snapshot (JSON), refreshed every health interval
+  read_only_mode: true             # GLOBAL write gate. true = every PLC write is rejected.
+  write_kill_switch_file: data/WRITE_DISABLE   # if this file exists, writes are rejected
+  data_dir: data
+  log_dir: logs
+
+buffer:
+  queue_max_size: 50000            # bounded in-memory queue (readings + events)
+  durability_mode: spool_first     # spool_first | memory_first
+  spool_path: data/spool.sqlite3
+  spool_max_rows: 20000000         # ~3.5 days at 4,000 readings/min, ~10.6 GB disk (measured ~530 B/record)
+  overflow_policy: drop_cyclic_keep_events   # drop_cyclic_keep_events | drop_oldest | reject_new
+  flush_interval_ms: 1000
+  batch_size: 1000
+
+database:
+  enabled: true
+  host_env: MYSQL_HOST
+  port_env: MYSQL_PORT
+  database_env: MYSQL_DATABASE
+  user_env: MYSQL_USER
+  password_env: MYSQL_PASSWORD
+  ssl_ca_env: MYSQL_SSL_CA
+  maint_user_env: MYSQL_MAINT_USER
+  maint_password_env: MYSQL_MAINT_PASSWORD
+  pool_min: 1
+  pool_max: 5
+  connect_timeout_s: 10
+  retry:
+    initial_delay_s: 1
+    max_delay_s: 60
+    jitter: 0.2
+
+retention:
+  history_days: 90
+  events_days: 365
+  health_days: 30
+  audit_days: 1825
+  partitions_ahead_days: 7
+  archive_mode: none               # none | csv_gzip  (export partition before drop)
+  archive_dir: data/archive
+  maintenance_hour_utc: 2
+
+health:
+  snapshot_interval_s: 30
+
+writes:
+  default_timeout_s: 5
+  kill_switch_env: GATEWAY_WRITE_DISABLE
+  rate_limit_per_min: 30
+
+integrations: []
+# Example (disabled until configured):
+#  - name: central
+#    type: rest_forwarder
+#    enabled: false
+#    url: https://central.example.local/api/ingest
+#    token_env: CENTRAL_SERVER_TOKEN
+#    verify_tls: true
+#    ca_file: null
+#    batch_size: 500
+#    timeout_s: 10
+#    outbox_path: data/outbox_central.sqlite3
+#    outbox_max_rows: 5000000
+#    publish: [readings, events]
+#  - name: mqtt
+#    type: mqtt_publisher
+#    enabled: false
+#    host: broker.plant.local
+#    port: 8883
+#    tls: true
+#    ca_file: certs/mqtt_ca.pem
+#    username_env: MQTT_USERNAME
+#    password_env: MQTT_PASSWORD
+#    topic_prefix: plant01/gateway
+#    qos: 1
+#    publish: [events]

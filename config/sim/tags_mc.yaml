@@ -1,0 +1,7 @@
+tags:
+  - {tag_id: speed, device_id: mc_sim, name: Spindle speed, address: D100, data_type: INT,
+     poll_interval_ms: 1000, logging_mode: cyclic, engineering_unit: rpm}
+  - {tag_id: total_count, device_id: mc_sim, name: Total count, address: D200, data_type: DINT,
+     poll_interval_ms: 5000, logging_mode: cyclic}
+  - {tag_id: running, device_id: mc_sim, name: Running, address: M10, data_type: BOOL,
+     poll_interval_ms: 1000, logging_mode: event, edge_events: true}

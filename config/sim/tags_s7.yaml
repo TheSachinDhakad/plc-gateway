@@ -1,0 +1,18 @@
+tags:
+  - {tag_id: temperature, device_id: s7_sim, name: Temperature, address: DB100.DBD0, data_type: REAL,
+     poll_interval_ms: 1000, logging_mode: cyclic, engineering_unit: C, thresholds: {high: 27.5, low: 22.5, hysteresis: 0.2}}
+  - {tag_id: pressure, device_id: s7_sim, name: Pressure, address: DB100.DBD4, data_type: REAL,
+     poll_interval_ms: 1000, logging_mode: cyclic, engineering_unit: bar}
+  - {tag_id: counter, device_id: s7_sim, name: Counter, address: DB100.DBW8, data_type: INT,
+     poll_interval_ms: 5000, logging_mode: cyclic}
+  - {tag_id: motor_status, device_id: s7_sim, name: MotorStatus, address: DB100.DBX10.0, data_type: BOOL,
+     poll_interval_ms: 1000, logging_mode: event, edge_events: true}
+  - tag_id: test_write_value
+    device_id: s7_sim
+    name: TestWriteValue
+    address: DB100.DBD12
+    data_type: REAL
+    poll_interval_ms: 5000
+    logging_mode: event
+    access: read_write
+    write: {min: 0, max: 100, allowed_roles: [operator], verify_readback: true, readback_tolerance: 0.0001}

@@ -1,0 +1,17 @@
+# Runtime dependencies — exact pins. Upgrade only after re-running the simulation
+# and hardware test suites (pymodbus and python-snap7 have broken APIs across minors).
+# Verified installable on CPython 3.11 (macOS arm64) on 2026-11-12.
+python-snap7==3.5.0
+pycomm3==1.2.16
+pymodbus==3.16.2
+pyserial==3.5
+asyncua==2.1.0
+aiomysql==0.3.2
+# PyMySQL 1.2.x replaced escape_bytes_prefixed with a sentinel string, which breaks
+# aiomysql 0.3.2 for every bytes parameter (BINARY(16) UUIDs). Keep 1.1.2 until aiomysql is fixed.
+PyMySQL==1.1.2
+pydantic==2.14.3
+PyYAML==6.0.3
+python-dotenv==1.2.4
+httpx==0.28.1
+psutil==7.2.2

@@ -1,0 +1,38 @@
+# Development settings for running against local simulators (python -m simulators).
+gateway:
+  gateway_id: gw_dev_sim
+  environment: development
+  status_file: data/sim/status.json
+  read_only_mode: false            # dev only: allows the commissioning test write against simulators
+  write_kill_switch_file: data/sim/WRITE_DISABLE
+  data_dir: data/sim
+  log_dir: logs/sim
+
+buffer:
+  queue_max_size: 50000
+  durability_mode: spool_first
+  spool_path: data/sim/spool.sqlite3
+  spool_max_rows: 5000000
+  overflow_policy: drop_cyclic_keep_events
+  flush_interval_ms: 1000
+  batch_size: 1000
+
+database:
+  enabled: true
+  pool_min: 1
+  pool_max: 3
+
+retention:
+  history_days: 7
+  events_days: 30
+  health_days: 7
+  audit_days: 30
+
+health:
+  snapshot_interval_s: 10
+
+writes:
+  default_timeout_s: 3
+  rate_limit_per_min: 60
+
+integrations: []

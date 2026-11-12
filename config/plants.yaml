@@ -1,0 +1,99 @@
+# Plants -> devices. Connection details only; secrets are referenced by env var name.
+# Every device except siemens_01 is a disabled template — enable after commissioning.
+plants:
+  - plant_id: plant_01
+    name: Main Plant
+    enabled: true
+    devices:
+      - device_id: siemens_01
+        name: Siemens S7-1200
+        driver: siemens_s7
+        enabled: true
+        write_enabled: false          # device write gate
+        tags_file: tags.yaml
+        connection:
+          host: 192.168.1.10
+          port: 102
+          rack: 0
+          slot: 1                     # S7-1200/1500 normally 1; S7-300 normally 2. VERIFY in TIA Portal.
+          timeout_s: 5
+          connection_type: PG
+        reconnect:
+          initial_delay_s: 1
+          max_delay_s: 60
+          jitter: 0.2
+        circuit_breaker:
+          failure_threshold: 5
+          open_duration_s: 30
+
+      - device_id: logix_01
+        name: ControlLogix L83
+        driver: rockwell_logix
+        enabled: false
+        write_enabled: false
+        tags_file: tags_logix.yaml
+        connection:
+          path: 192.168.1.20/0        # IP / backplane slot of the controller
+          timeout_s: 5
+
+      - device_id: fx5u_01
+        name: Mitsubishi FX5U
+        driver: mitsubishi_mc
+        enabled: false
+        write_enabled: false
+        tags_file: tags_mitsubishi.yaml
+        connection:
+          host: 192.168.1.30
+          port: 5000                  # SLMP port configured in GX Works3
+          frame: 3E
+          plc_series: FX5U
+          timeout_s: 3
+
+      - device_id: modbus_01
+        name: Energy Meter (Modbus TCP)
+        driver: modbus_tcp
+        enabled: false
+        write_enabled: false
+        tags_file: tags_modbus.yaml
+        connection:
+          host: 192.168.1.40
+          port: 502
+          unit_id: 1
+          timeout_s: 3
+          byte_order: big
+          word_order: big
+
+      - device_id: rtu_bus_01
+        name: RS485 bus COM3
+        driver: modbus_rtu
+        enabled: false
+        write_enabled: false
+        tags_file: tags_rtu.yaml
+        connection:
+          serial_port: COM3
+          baudrate: 9600
+          parity: E
+          stopbits: 1
+          bytesize: 8
+          unit_id: 1
+          timeout_s: 1
+          byte_order: big
+          word_order: big
+
+      - device_id: opcua_01
+        name: S7-1500 OPC UA server
+        driver: opc_ua
+        enabled: false
+        write_enabled: false
+        tags_file: tags_opcua.yaml
+        connection:
+          endpoint: opc.tcp://192.168.1.11:4840
+          security_policy: Basic256Sha256
+          security_mode: SignAndEncrypt
+          client_cert: certs/gateway_client_cert.der
+          client_key: certs/gateway_client_key.pem
+          server_cert: certs/s7_1500_server_cert.der
+          application_uri: urn:industrial-plc-gateway:client
+          username_env: OPCUA_USERNAME
+          password_env: OPCUA_PASSWORD
+          timeout_s: 5

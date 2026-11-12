@@ -1,0 +1,31 @@
+tags:
+  - tag_id: speed
+    device_id: fx5u_01
+    name: Spindle speed
+    address: D100
+    data_type: INT
+    poll_interval_ms: 1000
+    logging_mode: cyclic
+    engineering_unit: rpm
+  - tag_id: total_count
+    device_id: fx5u_01
+    name: Total count
+    address: D200
+    data_type: DINT
+    poll_interval_ms: 60000
+    logging_mode: cyclic
+  - tag_id: running
+    device_id: fx5u_01
+    name: Running
+    address: M10
+    data_type: BOOL
+    poll_interval_ms: 1000
+    logging_mode: event
+    edge_events: true
+  - tag_id: input_x17
+    device_id: fx5u_01
+    name: Input X17 (octal)
+    address: X17
+    data_type: BOOL
+    poll_interval_ms: 1000
+    logging_mode: event

@@ -1,0 +1,43 @@
+# Devices pointing at the local simulators started with: python -m simulators
+plants:
+  - plant_id: plant_sim
+    name: Simulation Plant
+    enabled: true
+    devices:
+      - device_id: s7_sim
+        name: S7-1200 simulator
+        driver: siemens_s7
+        enabled: true
+        write_enabled: true
+        tags_file: tags_s7.yaml
+        connection: {host: 127.0.0.1, port: 1102, rack: 0, slot: 1, timeout_s: 3}
+        reconnect: {initial_delay_s: 1, max_delay_s: 10, jitter: 0.2}
+
+      - device_id: modbus_sim
+        name: Modbus TCP simulator
+        driver: modbus_tcp
+        enabled: true
+        tags_file: tags_modbus.yaml
+        connection: {host: 127.0.0.1, port: 1502, unit_id: 1, timeout_s: 2}
+        reconnect: {initial_delay_s: 1, max_delay_s: 10, jitter: 0.2}
+
+      - device_id: mc_sim
+        name: FX5U simulator (MC 3E)
+        driver: mitsubishi_mc
+        enabled: true
+        tags_file: tags_mc.yaml
+        connection: {host: 127.0.0.1, port: 5000, frame: 3E, plc_series: FX5U, timeout_s: 2}
+        reconnect: {initial_delay_s: 1, max_delay_s: 10, jitter: 0.2}
+
+      - device_id: opcua_sim
+        name: OPC UA simulator
+        driver: opc_ua
+        enabled: true
+        tags_file: tags_opcua.yaml
+        connection:
+          endpoint: opc.tcp://127.0.0.1:4841/gateway-sim/
+          security_policy: "None"
+          security_mode: "None"
+          allow_insecure: true      # simulator only — never in production
+          timeout_s: 3
+        reconnect: {initial_delay_s: 1, max_delay_s: 10, jitter: 0.2}

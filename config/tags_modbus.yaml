@@ -1,0 +1,26 @@
+# Modbus addresses are ZERO-BASED protocol addresses: "holding:0" == 40001 in 1-based notation.
+tags:
+  - tag_id: voltage_l1
+    device_id: modbus_01
+    name: Voltage L1
+    address: holding:0
+    data_type: REAL
+    poll_interval_ms: 1000
+    logging_mode: cyclic
+    engineering_unit: V
+  - tag_id: energy_total
+    device_id: modbus_01
+    name: Active energy total
+    address: input:100
+    data_type: UDINT
+    poll_interval_ms: 60000
+    logging_mode: cyclic
+    engineering_unit: kWh
+    scaling: {raw_min: 0, raw_max: 1000, eng_min: 0, eng_max: 100, clamp: false}
+  - tag_id: breaker_closed
+    device_id: modbus_01
+    name: Breaker closed
+    address: discrete:0
+    data_type: BOOL
+    poll_interval_ms: 1000
+    logging_mode: event

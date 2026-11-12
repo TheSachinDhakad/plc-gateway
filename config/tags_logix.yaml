@@ -1,0 +1,24 @@
+tags:
+  - tag_id: line1_temp
+    device_id: logix_01
+    name: Line1 Temperature
+    address: Line1_Temp
+    data_type: REAL
+    poll_interval_ms: 1000
+    logging_mode: cyclic
+    engineering_unit: C
+  - tag_id: main_counter
+    device_id: logix_01
+    name: Main Program Counter
+    address: Program:MainProgram.Counter
+    data_type: DINT
+    poll_interval_ms: 60000
+    logging_mode: cyclic
+  - tag_id: recipe_values
+    device_id: logix_01
+    name: Recipe values
+    address: Recipe[0]
+    data_type: REAL
+    array_length: 10
+    poll_interval_ms: 60000
+    logging_mode: event

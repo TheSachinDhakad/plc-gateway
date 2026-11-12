@@ -1,0 +1,21 @@
+# Grafana datasource provisioning. Uses the READ-ONLY user gw_grafana (database/grants_example.sql).
+# The password comes from the Grafana process environment (GRAFANA_MYSQL_PASSWORD), never from this file.
+apiVersion: 1
+datasources:
+  - name: PLC Gateway MySQL
+    uid: plcgw-mysql
+    type: mysql
+    access: proxy
+    url: ${GRAFANA_MYSQL_HOST}:3306
+    user: gw_grafana
+    jsonData:
+      database: plc_gateway
+      maxOpenConns: 10
+      maxIdleConns: 5
+      connMaxLifetime: 14400
+      timezone: "+00:00"          # gateway stores UTC
+      tlsAuth: false
+      tlsSkipVerify: false
+    secureJsonData:
+      password: ${GRAFANA_MYSQL_PASSWORD}
+    editable: false

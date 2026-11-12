@@ -1,0 +1,30 @@
+# Secrets
+.env
+*.env.local
+certs/*.pem
+certs/*.key
+certs/*.der
+certs/*.pfx
+
+# Runtime data
+data/
+logs/
+perf/results/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
